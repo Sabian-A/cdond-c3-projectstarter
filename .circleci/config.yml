@@ -167,14 +167,15 @@ jobs:
 
   deploy-infrastructure:
     docker:
-      - image: cimg/aws:2023.01
+      - image: cimg/base:stable
     steps:
       - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            yum -y install tar
-            yum -y install gzip
+      - install_awscli
+      # - run:
+      #     name: Install dependencies
+      #     command: |
+      #       yum -y install tar
+      #       yum -y install gzip
       - run:
           name: Ensure back-end infrastructure exists
           command: |
