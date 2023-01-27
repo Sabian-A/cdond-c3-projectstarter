@@ -403,7 +403,7 @@ jobs:
       - run:
           name: Get backend url
           command: |
-            PUBLIC_IP=`cat ./.circleci/ansible/IP.txt`
+            PUBLIC_IP=`cat ./.circleci/ansible/inventory.txt`
             echo $PUBLIC_IP
             sleep 20
             URL="http://$PUBLIC_IP:3030/api/status"
