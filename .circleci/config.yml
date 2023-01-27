@@ -237,11 +237,11 @@ jobs:
           fingerprints: ["32:9c:b2:41:b0:b0:7b:2a:67:49:74:98:a2:f3:eb:68"]
       - attach_workspace:
           at: ~/
-      - run:
-          name: Install dependencies
-          command: |
-            # Your code here
-            exit 1
+      # - run:
+      #     name: Install dependencies
+      #     command: |
+      #       # Your code here
+      #       exit 1
       - run:
           name: Configure server
           command: |
