@@ -403,16 +403,16 @@ jobs:
       - run:
           name: Get backend url
           command: |
-            BACKEND_IP=`cat ./.circleci/ansible/IP.txt`
-            echo $BACKEND_IP
+            PUBLIC_IP=`cat ./.circleci/ansible/IP.txt`
+            echo $PUBLIC_IP
             sleep 20
-            URL="http://$BACKEND_IP:3030/api/status"
+            URL="http://$PUBLIC_IP:3030/api/status"
             echo $URL
             curl -s $URL
       - run:
           name: Backend smoke test.
           command: |
-            export API_URL="http://${BACKEND_IP}:3030"
+            export API_URL="http://${PUBLIC_IP}:3030"
             echo "${API_URL}"
             if curl "${API_URL}/api/status" | grep "ok"
             then
