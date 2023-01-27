@@ -167,7 +167,7 @@ jobs:
 
   deploy-infrastructure:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/aws:2023.01
     steps:
       - checkout
       - run:
@@ -211,7 +211,7 @@ jobs:
       - destroy-environment
 #   configure-infrastructure:
 #     docker:
-#       # Docker image here that supports Ansible
+#       - image: cimg/base:stable
 #     steps:
 #       # Checkout code from git
 #       # Add ssh keys with fingerprint
