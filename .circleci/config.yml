@@ -213,8 +213,8 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-      - revert-migrations
-      - destroy-environment
+      # - revert-migrations
+      # - destroy-environment
 #   configure-infrastructure:
 #     docker:
 #       - image: cimg/base:stable
