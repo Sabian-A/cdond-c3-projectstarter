@@ -1,15 +1,5 @@
 ---
- 
-- name: "update apt packages."
-  become: true
-  apt:
-    update_cache: yes
 
-
-- name: "Remove dependencies that are no longer required"
-  become: true
-  apt:
-    autoremove: yes
 - name: "Add Node.js from Nodesource"
   become: true
   shell: |
@@ -17,7 +7,7 @@
 - name: "install dependencies."
   become: true
   apt:
-    name: ["nodejs", "npm"]
+    name: ["nodejs"]
     state: latest
     update_cache: yes
 
@@ -26,6 +16,9 @@
   npm:
     name: pm2
     global: yes
-    production: yes
-    state: present
+- name: "move env variables to /etc/profile.d/"
+  become: true
+  copy:
+    src: myenv.sh
+    dest: /etc/profile.d/
 

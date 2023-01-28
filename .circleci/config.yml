@@ -218,12 +218,10 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
-      - run:
-          name: Install AWS CLI v2
-          command: |
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install
+      - add_ssh_keys:
+          fingerprints: ["32:9c:b2:41:b0:b0:7b:2a:67:49:74:98:a2:f3:eb:68"]
+      - attach_workspace:
+          at: ~/
       - run:
           name: Install Ansible
           command: |
@@ -231,10 +229,17 @@ jobs:
             sudo apt install software-properties-common -y
             sudo add-apt-repository --yes --update ppa:ansible/ansible
             sudo apt install ansible -y
-      - add_ssh_keys:
-          fingerprints: ["32:9c:b2:41:b0:b0:7b:2a:67:49:74:98:a2:f3:eb:68"]
-      - attach_workspace:
-          at: ~/
+      - run:
+          name: Install AWS CLI v2
+          command: |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+      
+      # - add_ssh_keys:
+      #     fingerprints: ["32:9c:b2:41:b0:b0:7b:2a:67:49:74:98:a2:f3:eb:68"]
+      # - attach_workspace:
+      #     at: ~/
       
       - run:
           name: Configure server
@@ -326,6 +331,10 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
+      - add_ssh_keys:
+          fingerprints: ["d9:06:93:7c:dd:ac:25:bf:3d:f3:10:f5:5d:69:f6:67"]
+      - attach_workspace:
+          at: ~/
       - run:
           name: Install AWS CLI v2
           command: |
@@ -345,10 +354,7 @@ jobs:
             sudo apt install software-properties-common -y
             sudo add-apt-repository --yes --update ppa:ansible/ansible
             sudo apt install ansible -y
-      - add_ssh_keys:
-          fingerprints: ["d9:06:93:7c:dd:ac:25:bf:3d:f3:10:f5:5d:69:f6:67"]
-      - attach_workspace:
-          at: ~/project
+      
       - restore_cache:
           keys: [backend-build]
       - run:
@@ -357,18 +363,22 @@ jobs:
             cd backend
             npm i
             npm run build 
+            cd ..
+            cd .circleci/ansible
+            mkdir files
+            cd files
             
             
             # Zip the directory
-            # tar -C ../../../backend -czvf artifact.tar.gz .
-            tar -czvf artifact.tar.gz dist/* package*
-            cd ..
+            tar -C ../../../backend -czvf artifact.tar.gz .
+            #tar -czvf artifact.tar.gz dist/* package*
+            cd ../
             sleep 20
-            cp backend/artifact.tar.gz .circleci/ansible/roles/deploy/files/
+            #cp backend/artifact.tar.gz .circleci/ansible/roles/deploy/files/
             export TYPEORM_MIGRATIONS_DIR=./migrations
             export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
             export TYPEORM_MIGRATIONS=./migrations/*.ts
-            cd .circleci/ansible
+            #cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
@@ -416,7 +426,7 @@ jobs:
               --filters "Name=tag:project,Values=udapeople-backend" \
               --output text)
             echo $PUBLIC_IP
-            sleep 60
+            
             export URL="http://$PUBLIC_IP:3030/api/status"
             curl $URL 
             if curl -s $URL | grep "ok"
