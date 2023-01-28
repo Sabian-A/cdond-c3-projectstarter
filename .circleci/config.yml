@@ -429,7 +429,10 @@ jobs:
       - run:
           name: Get Backend IP and Backend smoke test.
           command: |
-            PUBLIC_IP=`cat ./.circleci/ansible/IP.txt`
+            PUBLIC_IP=$(aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:project,Values=udapeople-backend" \
+              --output text)
             echo $PUBLIC_IP
             sleep 60
             export URL="http://$PUBLIC_IP:3030/api/status"
