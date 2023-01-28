@@ -204,7 +204,7 @@ jobs:
           name: Add back-end ip to ansible inventory
           command: |
             PUBLIC_IP=$(aws ec2 describe-instances \
-              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --filters "Name=tag:project,Values=udapeople-backend" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text)
             echo $PUBLIC_IP >> .circleci/ansible/inventory.txt
@@ -215,7 +215,7 @@ jobs:
           command: |
             PUBLIC_IP=$(aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --filters "Name=tag:project,Values=udapeople-backend" \
               --output text > ./.circleci/ansible/IP.txt)
             echo $PUBLIC_IP >> .circleci/ansible/IP.txt
             cat ./.circleci/ansible/IP.txt
@@ -324,7 +324,7 @@ jobs:
           name: Get backend url
           command: |
             PUBLIC_IP=$(aws ec2 describe-instances \
-              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --filters "Name=tag:project,Values=udapeople-backend" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text)
             echo "API_URL=http://${PUBLIC_IP}:3030" >> frontend/.env
@@ -453,8 +453,8 @@ jobs:
             else
               return 1
             fi
-      # - destroy-environment
-      # - revert-migrations
+      - destroy-environment
+      - revert-migrations
   cloudfront-update:
     docker:
       - image: cimg/base:stable
