@@ -433,7 +433,8 @@ jobs:
             echo $PUBLIC_IP
             sleep 60
             export URL="http://$PUBLIC_IP:3030/api/status"
-            if curl -s $URL
+            curl $URL 
+            if curl -s $URL | grep "ok"
             then
               return 0
             else
@@ -452,8 +453,8 @@ jobs:
             else
               return 1
             fi
-      - destroy-environment
-      - revert-migrations
+      # - destroy-environment
+      # - revert-migrations
   cloudfront-update:
     docker:
       - image: cimg/base:stable
