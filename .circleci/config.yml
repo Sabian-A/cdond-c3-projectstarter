@@ -210,6 +210,15 @@ jobs:
             echo $PUBLIC_IP >> .circleci/ansible/inventory.txt
             cat .circleci/ansible/inventory.txt
             #exit 1
+      - run:
+          name: Add back-end ip only to IP file for later use
+          command: |
+            PUBLIC_IP=$(aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --output text > ./.circleci/ansible/IP.txt)
+            echo $PUBLIC_IP >> .circleci/ansible/IP.txt
+            cat ./.circleci/ansible/IP.txt
       - persist_to_workspace:
           root: ~/
           paths:
@@ -401,20 +410,36 @@ jobs:
             curl -fsSL https://deb.nodesource.com/setup_13.x | sudo -E bash -
             sudo apt install -y nodejs
       
+      # - run:
+      #     name: Backend smoke test.
+      #     command: |
+
+      #       PUBLIC_IP=$(aws ec2 describe-instances \
+      #         --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+      #         --query 'Reservations[*].Instances[*].PublicIpAddress' \
+      #         --output text)
+      #       export API_URL=http://${PUBLIC_IP}:3030
+      #       if curl -s $API_URL/api/status | grep "Welcome"
+      #       then
+      #         exit 0
+      #       else
+      #         exit 1
+      #       fi
       - run:
-          name: Backend smoke test.
+          name: Get Backend IP and Backend smoke test.
           command: |
-            PUBLIC_IP=$(aws ec2 describe-instances \
-              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --output text)
-            export API_URL=http://${PUBLIC_IP}:3030
-            if curl -s $API_URL/api/status | grep "ok"
+            PUBLIC_IP=`cat ./.circleci/ansible/IP.txt`
+            echo $PUBLIC_IP
+            sleep 30
+            export URL="http://$PUBLIC_IP:3030/api/status"
+            
+            if curl -s $URL | grep "ok"
             then
               exit 0
             else
               exit 1
             fi
+            
       - run:
           name: Frontend smoke test.
           command: |
