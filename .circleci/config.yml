@@ -434,7 +434,7 @@ jobs:
               --filters "Name=tag:project,Values=udapeople-backend" \
               --output text)
             echo $PUBLIC_IP
-            sleep 600
+            sleep 60
             export URL="http://$PUBLIC_IP:3030/api/status"
             curl $URL 
             if curl -s $URL | grep "ok"
