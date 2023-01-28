@@ -433,15 +433,15 @@ jobs:
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text)
             
-            sleep 30
+            sleep 60
             export URL="http://$PUBLIC_IP:3030/api/status"
             
             
             if curl -s $URL | grep "ok"
             then
-              exit 0
+              return 0
             else
-              exit 1
+              return 1
             fi
             
       - run:
