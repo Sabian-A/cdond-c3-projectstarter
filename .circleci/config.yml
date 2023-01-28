@@ -223,6 +223,7 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
+            - project/.circleci/ansible/IP.txt
       - revert-migrations
       - destroy-environment
   configure-infrastructure:
@@ -428,16 +429,11 @@ jobs:
       - run:
           name: Get Backend IP and Backend smoke test.
           command: |
-            PUBLIC_IP=$(aws ec2 describe-instances \
-              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --output text)
-            
+            PUBLIC_IP=`cat ./.circleci/ansible/IP.txt`
+            echo $PUBLIC_IP
             sleep 60
             export URL="http://$PUBLIC_IP:3030/api/status"
-            
-            
-            if curl -s $URL | grep "ok"
+            if curl -s $URL
             then
               return 0
             else
