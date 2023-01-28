@@ -358,11 +358,11 @@ jobs:
             npm i
             npm run build 
             cd ..
-            cd .circleci/ansible/roles/deploy/files
+            
             # Zip the directory
             # tar -C ../../../backend -czvf artifact.tar.gz .
-            tar -C ../../../backend -czvf artifact.tar.gz .
-            cd ..
+            tar -czvf artifact.tar.gz .
+            cp .circleci/ansible/roles/deploy/files/
             
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
