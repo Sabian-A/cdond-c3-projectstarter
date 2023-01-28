@@ -428,10 +428,14 @@ jobs:
       - run:
           name: Get Backend IP and Backend smoke test.
           command: |
-            PUBLIC_IP=`cat ./.circleci/ansible/IP.txt`
-            echo $PUBLIC_IP
+            PUBLIC_IP=$(aws ec2 describe-instances \
+              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --output text)
+            
             sleep 30
             export URL="http://$PUBLIC_IP:3030/api/status"
+            
             
             if curl -s $URL | grep "ok"
             then
