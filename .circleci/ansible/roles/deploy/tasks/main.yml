@@ -16,15 +16,15 @@
 #     pm2 stop default
 #     pm2 start npm -- start
 
-# - name: "Installing Node Dependencies"
-#   shell: |
-#     cd ~/backend-app
-#     npm install
+- name: "Installing Node Dependencies"
+  shell: |
+    cd ~/backend-app
+    npm i
 - name: "Executing Node app with PM2"
   shell: |
     cd ~/backend-app/dist
     cd ../
-    npm install
+    # npm install
     npm run build
     sudo npm install forever -g
     sudo npm install ts-node -g
