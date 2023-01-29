@@ -18,7 +18,7 @@
 - name: "Executing Node app with PM2"
   shell: |
     cd ~/backend-app/dist
-    cd ../
+    # cd ../
     npm install
     npm run build
     sudo npm install forever -g
