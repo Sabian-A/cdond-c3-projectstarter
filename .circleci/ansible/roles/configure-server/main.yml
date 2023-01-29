@@ -12,10 +12,10 @@
     update_cache: yes
 
 - name: "Install PM2 Globally"
-  become: true
   npm:
     name: pm2
     global: yes
+
 - name: "move env variables to /etc/profile.d/"
   become: true
   copy:
