@@ -14,9 +14,9 @@
 - name: "Installing Node Dependencies"
     become: true
     apt:
-        name: ["node.js","npm"]
-        state: latest
-        update_cache: yes
+      name: ["node.js","npm"]
+      state: latest
+      update_cache: yes
   
 - name: "Executing Node app with PM2"
   shell: |
