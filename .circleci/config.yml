@@ -334,13 +334,13 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
+      - install_awscli
+      - install_nodejs
+      - install_ansible
       - add_ssh_keys:
           fingerprints: ["d9:06:93:7c:dd:ac:25:bf:3d:f3:10:f5:5d:69:f6:67"]
       - attach_workspace:
           at: ~/
-      - install_awscli
-      - install_nodejs
-      - install_ansible
       
       - restore_cache:
           keys: [backend-build]
@@ -350,21 +350,24 @@ jobs:
             cd backend
             npm install
       - run:
-          name: Deploy backend
+          name: Package backend
           command: |
             cd backend
             npm run build 
             tar -czvf artifact.tar.gz dist/* package*
             cd ..
             cp backend/artifact.tar.gz .circleci/ansible/roles/deploy/files/
+            
+      - run:
+          name: Deploy backend
+          command: |
             export TYPEORM_MIGRATIONS_DIR=./migrations
             export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
             export TYPEORM_MIGRATIONS=./migrations/*.ts
             cd .circleci/ansible
             cat inventory.txt
-            
-            
             ansible-playbook -i inventory.txt deploy-backend.yml
+      
       - destroy-environment
       - revert-migrations
   smoke-test:
