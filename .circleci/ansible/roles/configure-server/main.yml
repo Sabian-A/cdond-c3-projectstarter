@@ -1,3 +1,4 @@
+---
 - name: "update local apt repo."
   become: true
   apt:
@@ -31,9 +32,9 @@
     production: yes
     state: present
 
-- name: "move env variables to /etc/profile.d/"
-  become: true
-  copy:
-    src: myenv.sh
-    dest: /etc/profile.d/
+# - name: "move env variables to /etc/profile.d/"
+#   become: true
+#   copy:
+#     src: myenv.sh
+#     dest: /etc/profile.d/
 
