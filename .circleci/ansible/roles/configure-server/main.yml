@@ -1,8 +1,23 @@
 ---
-# - name: "Add Node.js from Nodesource"
-#   become: true
-#   shell: |
-#     curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+- name: "update local apt repo."
+  become: true
+  apt:
+    update_cache: yes
+
+- name: "upgrade apt packages"
+  become: true
+  apt:
+    upgrade: yes
+
+
+- name: "remove stale dependencies"
+  become: true
+  apt:
+    autoremove: yes
+- name: "Add Node.js from Nodesource"
+  become: true
+  shell: |
+    curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
     
 - name: "Install Node.js 13"
   become: true
@@ -17,9 +32,9 @@
     production: yes
     state: present
 
-# - name: "move env variables to /etc/profile.d/"
-#   become: true
-#   copy:
-#     src: myenv.sh
-#     dest: /etc/profile.d/
+- name: "move env variables to /etc/profile.d/"
+  become: true
+  copy:
+    src: myenv.sh
+    dest: /etc/profile.d/
 
