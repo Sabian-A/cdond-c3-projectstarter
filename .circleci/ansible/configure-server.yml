@@ -24,6 +24,12 @@
       become: true
       raw: test -e /usr/bin/python3 || (apt -y update && apt install -y python3)
       changed_when: false
+    - name: "Install Node.js 13"
+      become: true
+      apt:
+        name: ["nodejs","npm"]
+        state: latest
+        update_cache: yes
     # - setup:
   environment:
     - TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION')}}"
@@ -36,5 +42,5 @@
     - TYPEORM_MIGRATIONS: "{{ lookup('env', 'TYPEORM_MIGRATIONS')}}"
     - TYPEORM_MIGRATIONS_DIR: "{{ lookup('env', 'TYPEORM_MIGRATIONS_DIR')}}" 
   roles:
-    
+    - configure-server
     - configure-prometheus-node-exporter
