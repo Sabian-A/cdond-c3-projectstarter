@@ -405,7 +405,7 @@ jobs:
       #         exit 1
       #       fi
       - run:
-          name:Backend smoke test.
+          name: Backend smoke test.
           command: |
             BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
