@@ -233,12 +233,13 @@ jobs:
       - run:
           name: Add back-end ip to ansible inventory
           command: |
-            PUBLIC_IP=$(aws ec2 describe-instances \
-              --filters "Name=tag:project,Values=udapeople-backend" \
-              --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --output text)
-            echo $PUBLIC_IP >> .circleci/ansible/inventory.txt
-            cat .circleci/ansible/inventory.txt
+            cd .circleci/ansible
+            cat inventory.txt
+            aws ec2 describe-instances \
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --output text --filters Name=tag:project,Values=udapeople-backend >> inventory.txt 
+            cat inventory.txt 
+            
             #exit 1
       
       - persist_to_workspace:
@@ -249,31 +250,26 @@ jobs:
       - destroy-environment
   configure-infrastructure:
     docker:
+      # Docker image here that supports Ansible
       - image: cimg/base:stable
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["32:9c:b2:41:b0:b0:7b:2a:67:49:74:98:a2:f3:eb:68"]
+          fingerprints:
+            - "a4:9d:96:eb:ac:e1:aa:05:fb:97:f2:1d:e8:2c:0e:9c"
       - attach_workspace:
           at: ~/
-      - install_ansible
+    
+      - install_ansible    
       - install_awscli
-      
-      # - add_ssh_keys:
-      #     fingerprints: ["32:9c:b2:41:b0:b0:7b:2a:67:49:74:98:a2:f3:eb:68"]
-      # - attach_workspace:
-      #     at: ~/
-      
       - run:
           name: Configure server
           command: |
             cd .circleci/ansible
-            ls -a
             cat inventory.txt
             ansible-playbook -i inventory.txt configure-server.yml
       - destroy-environment
-      # Here's where you will add some code to rollback on failure      
-
+ 
   run-migrations:
     docker:
       - image: cimg/node:13.8.0
