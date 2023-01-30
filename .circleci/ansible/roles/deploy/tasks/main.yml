@@ -14,23 +14,18 @@
 - name: "Installing Node Dependencies"
   shell: |
     cd ~/backend-app
-    npm install
-    npm run build
-    sudo npm install forever -g
-    sudo npm install ts-node -g
+    npm i
+- name: "Executing Node app with PM2"
+  shell: |
+    cd ~/backend-app/dist
+    
     pm2 stop default
     pm2 start npm -- start
-# - name: "Executing Node app with PM2"
-#   shell: |
-#     cd ~/backend-app/dist
-    
-#     pm2 stop default
-#     pm2 start main.js
-#   register: execute_node
+  register: execute_node
 
-# - name: print message
-#   debug:
-#     msg: "{{ execute_node.stdout_lines }}"
+- name: print message
+  debug:
+    msg: "{{ execute_node.stdout_lines }}"
 
 - name: "Configure pm2 to start as service"
   become: true
