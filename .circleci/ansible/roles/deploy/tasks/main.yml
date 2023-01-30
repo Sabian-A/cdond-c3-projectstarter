@@ -15,6 +15,9 @@
   shell: |
     cd ~/backend-app
     npm install
+    npm run build
+    sudo npm install forever -g
+    sudo npm install ts-node -g
     pm2 stop default
     pm2 start npm -- start
 # - name: "Executing Node app with PM2"
