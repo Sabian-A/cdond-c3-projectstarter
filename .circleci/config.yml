@@ -237,7 +237,8 @@ jobs:
             cat inventory.txt
             aws ec2 describe-instances \
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            --output text --filters Name=tag:project,Values=udapeople-backend >> inventory.txt 
+            --output text --filters Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7} >> inventory.txt 
+            
             cat inventory.txt 
             
             #exit 1
@@ -321,7 +322,7 @@ jobs:
           name: Get backend url
           command: |
             PUBLIC_IP=$(aws ec2 describe-instances \
-              --filters "Name=tag:project,Values=udapeople-backend" \
+              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text)
             echo "API_URL=http://${PUBLIC_IP}:3030" >> frontend/.env
@@ -409,8 +410,8 @@ jobs:
           command: |
             BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            --output text --filters "Name=tag:project,Values=udapeople-backend" 
-            )
+            --output text --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}")
+            
               export API_URL=http://${BACKEND_PUBLIC_IP}:3030
               echo ${BACKEND_PUBLIC_IP}
               echo backend-${CIRCLE_WORKFLOW_ID:0:7}
