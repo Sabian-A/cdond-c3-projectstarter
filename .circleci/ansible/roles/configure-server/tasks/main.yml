@@ -14,6 +14,8 @@
 #   npm:
 #     name: pm2
 #     global: yes
+#     production: yes
+#     state: present      
 
 
 
@@ -48,8 +50,6 @@
   npm:
     name: pm2
     global: yes
-    production: yes
-    state: present
 
 # - name: "move env variables to /etc/profile.d/"
 #   become: true
