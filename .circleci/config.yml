@@ -241,7 +241,7 @@ jobs:
             
             cat inventory.txt 
             
-            #exit 1
+            #exit-1
       
       - persist_to_workspace:
           root: ~/
