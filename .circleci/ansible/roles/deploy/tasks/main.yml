@@ -13,7 +13,7 @@
   become: true
   command: pm2 start npm -- start
   args:
-    chdir: ./backend-app
+    chdir: ~/backend-app
 # - name: "Installing Node Dependencies"
 #   shell: |
 #     cd ~/backend-app
