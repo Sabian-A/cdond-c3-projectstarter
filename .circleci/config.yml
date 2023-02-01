@@ -465,11 +465,12 @@ jobs:
   cloudfront-update:
     docker:
       - image: cimg/base:stable
+
     steps:
       - checkout
       - install_awscli
       - install_nodejs
-     - run:
+      - run:
           name: Install dep / Save Old Workflow ID 
           command: |
             export OLDWORKFLOWID=$(aws cloudformation \
