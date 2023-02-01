@@ -357,18 +357,6 @@ jobs:
             cd backend
             npm install
       - run:
-          name: Package backend
-          command: |
-            cd backend
-            npm run build
-            tar -czf artifact.tar.gz dist/* package*
-            pwd
-            ls -a
-            cd ..
-            pwd
-            ls -a
-            cp backend/artifact.tar.gz .circleci/ansible/roles/deploy/files
-      - run:
           name: Add .env vars to backend distro
           command: |
             echo ENVIRONMENT=production > backend/.env
@@ -381,14 +369,34 @@ jobs:
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> backend/.env
             echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS >> "backend/.env"
             echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> "backend/.env"
-            echo NODE_ENV=production >> "backend/.env"      
-            
+            echo NODE_ENV=production >> "backend/.env"     
+      - run:
+          name: Package backend
+          command: |
+            # cd backend
+            # npm run build
+            # tar -czf artifact.tar.gz dist/* package*
+            # pwd
+            # ls -a
+            # cd ..
+            # pwd
+            # ls -a
+            # cp backend/artifact.tar.gz .circleci/ansible/roles/deploy/files
+            cd backend
+            npm i
+            npm run build
+            cd ..
+            cd .circleci/ansible
+            mkdir files
+            cd files
+            tar -C ../../../backend -czvf artifact.tar.gz .
+            cd ../
       - run:
           name: Deploy backend
           command: |
-            export TYPEORM_MIGRATIONS_DIR=/migrations
-            export TYPEORM_ENTITIES=/modules/domain/**/*.entity{.ts,.js}
-            export TYPEORM_MIGRATIONS=/migrations/*.ts
+            # export TYPEORM_MIGRATIONS_DIR=/migrations
+            # export TYPEORM_ENTITIES=/modules/domain/**/*.entity{.ts,.js}
+            # export TYPEORM_MIGRATIONS=/migrations/*.ts
             cd .circleci/ansible
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
