@@ -461,21 +461,21 @@ jobs:
       - run:
           name: Install dep / Save Old Workflow ID 
           command: |
-            export OLDWORKFLOWID=$(aws cloudformation \
+            export OldWorklowID=$(aws cloudformation \
               list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
               --no-paginate --output text)
-            echo OLDWORKFLOWID: $OLDWORKFLOWID >> ~/OLDWORKFLOWID.txt
-            cat ~/OLDWORKFLOWID.txt
+            echo OLDWORKFLOWID: $OldWorkflowID >> ~/OldWorkflowID.txt
+            cat ~/OldWorkflowID.txt
       - run:
           name: Update cloudfront distribution
           command: |
             
             aws cloudformation deploy \
               --template-file .circleci/files/cloudfront.yml \
-              --stack-name InitialStack \
+              --stack-name "InitialStack-${OldWorkflowID}" \
               --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=udapeople
-            echo OLDWORKFLOWID:"${OLDWORKFLOWID}"
+            echo OLDWORKFLOWID:"${OldWorkflowID}"
             echo CURRENTWORKFLOWID:"${CIRCLE_WORKFLOW_ID:0:7}" 
               
       - destroy-environment
@@ -495,7 +495,7 @@ jobs:
                   --query "StackSummaries[*].StackName" \
                   --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
               echo Stack names: "${STACKS[@]}"
-              export OldWorkflowID=$(cat ~/OLDWORKFLOWID.txt)
+              export OldWorkflowID=$(cat ~/OldWorkflowID.txt)
               echo Old Workflow ID: "${OldWorkflowID}"
               echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
         - run:
