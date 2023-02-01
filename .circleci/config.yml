@@ -299,10 +299,7 @@ jobs:
             fi
       - destroy-environment
       - revert-migrations
-      - slack/notify:
-          channel: cicd
-          event: fail
-          template: basic_fail_1
+      
      # Here's where you will add some code to rollback on      
 
   deploy-frontend:
@@ -340,10 +337,7 @@ jobs:
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       - destroy-environment
       - revert-migrations 
-      - slack/notify:
-          channel: cicd
-          event: fail
-          template: basic_fail_1    
+         
   deploy-backend:
     docker:
       - image: cimg/base:stable
@@ -412,10 +406,7 @@ jobs:
       
       - destroy-environment
       - revert-migrations
-      - slack/notify:
-          channel: cicd
-          event: fail
-          template: basic_fail_1
+      
   smoke-test:
     docker:
       - image: cimg/base:stable 
@@ -458,10 +449,7 @@ jobs:
             fi
       - destroy-environment
       - revert-migrations
-      - slack/notify:
-          channel: cicd
-          event: fail
-          template: basic_fail_1
+      
   cloudfront-update:
     docker:
       - image: cimg/base:stable
@@ -491,10 +479,7 @@ jobs:
               
       - destroy-environment
       - revert-migrations
-      - slack/notify:
-          channel: cicd
-          event: fail
-          template: basic_fail_1
+      
       #for ret
 cleanup:
     docker:
