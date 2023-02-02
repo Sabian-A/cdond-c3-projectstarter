@@ -458,7 +458,7 @@ jobs:
       - checkout
       - install_awscli
       - install_nodejs
-      -run:
+      - run:
           name: Save workflow id to kvdb
           command: |
             WorkflowID=$(aws cloudformation \
