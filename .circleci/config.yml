@@ -459,7 +459,7 @@ jobs:
       - install_awscli
       - install_nodejs
       - run:
-          name: Install dep / Save Old Workflow ID 
+          name:  Save Old Workflow ID 
           command: |
             export OLD_WORKFLOW_ID=$(aws cloudformation \
             list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
@@ -503,23 +503,20 @@ jobs:
       - run:
           name: Remove old stacks and files
           command: |
-            WORKFLOW_ID=$(aws cloudformation list-exports \
-              --query "Exports[?Name==\`WorkflowID\`].Value" \
-              --no-paginate \
-              --output text)
-            echo "WORKFLOW_ID: $WORKFLOW_ID"
-            if [[ $WORKFLOW_ID != udapeople-${CIRCLE_WORKFLOW_ID:0:7} ]]
+            OldWorkflowID=$(curl --insecure https://kvdb.io/GtGbDoEvT8RZb2L6PJkYPU/old_workflow_id)
+            CurrentWorkflowID=${CIRCLE_WORKFLOW_ID:0:7}
+            if [[ $OldWorkflowID == "" ]]
             then
-              echo "$WORKFLOW_ID!=${RUN_ID:0:7} => will delete old infrastructure"
-              aws s3 rm "s3://udapeople-${WORKFLOW_ID}" --recursive
-              aws cloudformation delete-stack \
-                --stack-name "udapeople-frontend-${WORKFLOW_ID}"
-              aws cloudformation delete-stack \
-                --stack-name "udapeople-backend-${WORKFLOW_ID}"
+            echo "No workflow id found"
             else
-              echo "$WORKFLOW_ID==${CIRCLE_WORKFLOW_ID:0:7} => nothing needs to be done"
+            if [[ "$CurrentWorkflowID" != "$OldWorkflowID" ]]
+            then
+              echo "$OldWorkflowID!=$CurrentWorkflowID => will delete old version"
+              aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
+              aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
+              aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
             fi
-            
+            fi
             
 
 workflows:
