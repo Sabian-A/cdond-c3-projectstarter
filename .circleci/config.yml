@@ -484,14 +484,14 @@ jobs:
       
       #for ret
   cleanup:
-      docker:
-        - image: cimg/base:stable
-      steps:
-        - checkout
-        - attach_workspace:
-            at: ~/
-        - install_awscli
-        - run:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/
+      - install_awscli
+      - run:
           name: Get old stack workflow id
           command: |
             export STACKS=($(aws cloudformation list-stacks \
