@@ -481,7 +481,7 @@ jobs:
             echo CURRENTWORKFLOWID:"${CIRCLE_WORKFLOW_ID:0:7}" 
       - destroy-environment
       - revert-migrations
-      #for tyyyy
+      #for 
 
   cleanup:
     docker:
