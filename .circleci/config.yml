@@ -469,7 +469,7 @@ jobs:
       - run:
           name: Update cloudfront distribution
           command: |
-            export OldWorkflowID=$(curl --insecure https://kvdb.io/GtGbDoEvT8RZb2L6PJkYPU/old_workflow_id)
+            export OldWorkflowID=$(curl --insecure https://kvdb.io/GtGbDoEvT8RZb2L6PJkYPU/old_workflowid)
             echo Old Workflow ID: $OldWorkflowID
             
             aws cloudformation deploy \
@@ -497,15 +497,15 @@ jobs:
                 --query "StackSummaries[*].StackName" \
                 --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
             echo Stack names: "${STACKS[@]}"
-            export OldWorkflowID=$(curl --insecure https://kvdb.io/GtGbDoEvT8RZb2L6PJkYPU/old_workflow_id)
+            export OldWorkflowID=$(curl --insecure https://kvdb.io/GtGbDoEvT8RZb2L6PJkYPU/old_workflowid)
             echo Old Workflow ID: $OldWorkflowID 
             CurrentWorkflowID=${CIRCLE_WORKFLOW_ID:0:7}
             echo Current Workflow ID: $CurrentWorkflowID
             if [[ $OldWorkflowID != udapeople-${CIRCLE_WORKFLOW_ID:0:7} ]]
             then
-              echo "$OldWorkflowID!=${RUN_ID:0:7} => will delete old infrastructure"
+              echo "$OldWorkflowID!=$CurrentWorkflowID => will delete old infrastructure"
               
-              aws s3 rm "s3://${OldWorkflowID}" --recursive
+              aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
               aws cloudformation delete-stack \
                 --stack-name "udapeople-frontend-${OldWorkflowID}"
               aws cloudformation delete-stack \
