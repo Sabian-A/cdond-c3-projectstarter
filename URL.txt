@@ -1,2 +1,2 @@
-URL 01: https://github.com/Sabian-A/cdond-c3-projectstarter
-URL 01: https://udapeople-b8b10e5.s3.amazonaws.com/
+[URL 01]: https://github.com/Sabian-A/cdond-c3-projectstarter
+[URL 02]: http://udapeople-862ccc6.s3-website-us-east-1.amazonaws.com
